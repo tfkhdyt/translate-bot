@@ -1,0 +1,18 @@
+{
+  "name": "translate-bot",
+  "version": "0.0.1",
+  "description": "Google Translate on Telegram Bot",
+  "main": "src/main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "translate",
+    "google",
+    "telegram",
+    "bot",
+    "telegraf"
+  ],
+  "author": "tfkhdyt",
+  "license": "ISC"
+}
