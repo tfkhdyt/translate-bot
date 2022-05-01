@@ -1,15 +1,27 @@
-export interface TranslateResult {
+export interface IOptions {
+  from?: string;
+  to?: string;
+  tld?: string;
+  autoCorrect?: boolean;
+}
+
+export interface ITranslateLanguage {
+  didYouMean: boolean;
+  iso: string;
+}
+
+export interface ITranslateText {
+  autoCorrected: boolean;
+  value: string;
+  didYouMean: boolean;
+}
+
+export interface ITranslateResponse {
   text: string;
+  pronunciation: string;
   from: {
-    language: {
-      didYouMean: boolean;
-      iso: string;
-    };
-    text: {
-      autoCorrected: boolean;
-      value: string;
-      didYouMean: boolean;
-    };
+    language: ITranslateLanguage;
+    text: ITranslateText;
   };
   raw: string;
 }

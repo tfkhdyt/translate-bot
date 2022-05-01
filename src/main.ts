@@ -7,14 +7,17 @@ const BOT_TOKEN = process.env.BOT_TOKEN as string;
 const bot = new Bot(BOT_TOKEN);
 const telegraf = bot.bot;
 
+telegraf.start((ctx) => bot.sendStartMessage(ctx));
+
 telegraf.on('text', async (ctx) => {
   const args = ctx.message.text;
   const mode = args.split(' ')[0].toLowerCase();
 
-  if (!mode.includes('->'))
-    return ctx.replyWithMarkdown('*Mode* is not valid!');
-
   const text = args.split(' ').slice(1).join(' ');
+
+  if (!text || text.length === 0)
+    return ctx.replyWithMarkdown("*Text* shouldn't be empty");
+
   let _from: string | undefined;
   let to: string = '';
 
@@ -23,7 +26,11 @@ telegraf.on('text', async (ctx) => {
     _from = modes?._from;
     to = modes.to;
   } catch (err) {
-    ctx.replyWithMarkdown(err as string);
+    if (Array.isArray(err)) {
+      const errors = err.map((value) => `- ${value}`).join('\n');
+      return ctx.replyWithMarkdown(errors as string);
+    }
+    return ctx.replyWithMarkdown(err as string);
   }
 
   const translator = new Translator({ _from, to });
@@ -50,17 +57,22 @@ telegraf.on('text', async (ctx) => {
         line += '-';
       }
 
-      return line;
+      return line.slice(0, 60);
     })();
+    const pronunciation = result.pronunciation;
 
     ctx.replyWithMarkdown(
-      `*${fullNameFromLanguage}* ${_from === 'auto' ? '- Detected' : ''}
+      `*${fullNameFromLanguage}${result.from.language.didYouMean ? '?' : ''}* ${
+        _from === 'auto' ? '- Detected' : ''
+      }
 
-\`${text}\` ${isDidYouMean ? `\n(Did you mean: \`${didYouMeanText}\`)` : ''}
+\`${text}\` ${isDidYouMean ? `\n(Did you mean: \`${didYouMeanText}\`)` : ''} 
 ${separator}
 *${fullNameToLanguage}*
 
-\`${result.text}\`\n`
+\`${result.text}\`
+${pronunciation ? `🗣️: \`${pronunciation}\`` : ''}
+`
     );
   } catch (err) {
     console.error(err);
