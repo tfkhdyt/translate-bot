@@ -5,6 +5,10 @@ import { Bot } from './bot';
 import { Translator } from './translator';
 
 const BOT_TOKEN = process.env.BOT_TOKEN as string;
+const NODE_ENV = process.env.NODE_ENV as string;
+const BOT_DOMAIN = process.env.BOT_DOMAIN as string;
+const PORT = Number(process.env.PORT) || 4000;
+
 const bot = new Bot(BOT_TOKEN);
 const telegraf = bot.bot;
 
@@ -96,9 +100,20 @@ telegraf.on('callback_query', (ctx) => {
   // console.log(query);
 });
 
-telegraf.launch().then(() => {
-  console.log('Bot is running...');
-});
+// launcher
+if (NODE_ENV === 'development') {
+  telegraf.launch().then(() => console.log('Bot is running in development'));
+} else {
+  telegraf.telegram.setWebhook(`${BOT_DOMAIN}/bot${BOT_TOKEN}`);
+  telegraf
+    .launch({
+      webhook: {
+        hookPath: `/bot${BOT_TOKEN}`,
+        port: PORT,
+      },
+    })
+    .then(() => console.log('Bot is running in production'));
+}
 
 // Enable graceful stop
 process.once('SIGINT', () => telegraf.stop('SIGINT'));
