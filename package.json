@@ -8,7 +8,7 @@
     "build": "rm -fr ./dist && tsc",
     "dev": "tsnd --respawn --clear --rs ./src/main",
     "format": "prettier -cw ./src/**/*.ts",
-    "lint": "eslint --fix ./src/**/*.ts"
+    "lint": "eslint --fix ./src"
   },
   "keywords": [
     "translate",

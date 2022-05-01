@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { ExtraEditMessageText } from 'telegraf/typings/telegram-types';
 
 import { Bot } from './bot';
 import { Translator } from './translator';
@@ -8,6 +9,13 @@ const bot = new Bot(BOT_TOKEN);
 const telegraf = bot.bot;
 
 telegraf.start((ctx) => bot.sendStartMessage(ctx));
+
+telegraf.help((ctx) => bot.sendHelpMessage(ctx));
+
+telegraf.command('languages', (ctx) => {
+  const { languages, options } = bot.showLanguages(1);
+  ctx.reply(languages, options);
+});
 
 telegraf.on('text', async (ctx) => {
   const args = ctx.message.text;
@@ -19,7 +27,7 @@ telegraf.on('text', async (ctx) => {
     return ctx.replyWithMarkdown("*Text* shouldn't be empty");
 
   let _from: string | undefined;
-  let to: string = '';
+  let to = '';
 
   try {
     const modes = await bot.parseMode(mode);
@@ -37,7 +45,7 @@ telegraf.on('text', async (ctx) => {
 
   try {
     const result = await translator.translate(text);
-    console.log(result);
+    // console.log(result);
     const fullNameFromLanguage = translator.parseLanguageName(
       result.from.language.iso
     );
@@ -77,6 +85,15 @@ ${pronunciation ? `🗣️: \`${pronunciation}\`` : ''}
   } catch (err) {
     console.error(err);
   }
+});
+
+telegraf.on('callback_query', (ctx) => {
+  const query = ctx.callbackQuery?.data;
+  const { languages, options } = bot.showLanguages(Number(query));
+  ctx.editMessageText(languages, options as ExtraEditMessageText);
+  // bot.showLanguagesPage(ctx, Number(query));
+  // ctx.deleteMessage(ctx.callbackQuery.message?.message_id);
+  // console.log(query);
 });
 
 telegraf.launch().then(() => {
