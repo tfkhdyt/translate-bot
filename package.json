@@ -1,6 +1,6 @@
 {
   "name": "translate-bot",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Google Translate on Telegram Bot",
   "main": "src/main.ts",
   "scripts": {
