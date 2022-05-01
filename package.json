@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./dist/main",
     "build": "rm -fr ./dist && tsc",
-    "dev": "tsnd --respawn --clear ./src/main",
+    "dev": "tsnd --respawn --clear --rs ./src/main",
     "format": "prettier -cw ./src/**/*.ts",
     "lint": "eslint --fix ./src/**/*.ts"
   },
@@ -20,6 +20,7 @@
   "author": "tfkhdyt",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^17.0.30",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.21.0",
     "eslint": "^8.14.0",
